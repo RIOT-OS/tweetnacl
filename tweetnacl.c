@@ -780,7 +780,7 @@ static int unpackneg(gf r[4],const u8 p[32])
 
 int crypto_sign_open(u8 *m,u64 *mlen,const u8 *sm,u64 n,const u8 *pk)
 {
-  int i;
+  u64 i;
   u8 t[32],h[64];
   gf p[4],q[4];
 
