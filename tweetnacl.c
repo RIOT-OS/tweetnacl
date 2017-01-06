@@ -712,7 +712,8 @@ sv reduce(u8 *r)
 int crypto_sign(u8 *sm,u64 *smlen,const u8 *m,u64 n,const u8 *sk)
 {
   u8 d[64],h[64],r[64];
-  i64 i,j,x[64];
+  u64 i;
+  i64 j,x[64];
   gf p[4];
 
   crypto_hash(d, sk, 32);
