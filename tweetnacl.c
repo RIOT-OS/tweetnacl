@@ -7,7 +7,7 @@ typedef unsigned long u32;
 typedef unsigned long long u64;
 typedef long long i64;
 typedef i64 gf[16];
-extern void randombytes(u8 *,u64);
+extern void randombytes(u8 *,u32);
 
 static const u8
   _0[16],
@@ -123,7 +123,7 @@ int crypto_core_hsalsa20(u8 *out,const u8 *in,const u8 *k,const u8 *c)
 
 static const u8 sigma[16] = "expand 32-byte k";
 
-int crypto_stream_salsa20_xor(u8 *c,const u8 *m,u64 b,const u8 *n,const u8 *k)
+int crypto_stream_salsa20_xor(u8 *c,const u8 *m,u32 b,const u8 *n,const u8 *k)
 {
   u8 z[16],x[64];
   u32 u,i;
@@ -150,19 +150,19 @@ int crypto_stream_salsa20_xor(u8 *c,const u8 *m,u64 b,const u8 *n,const u8 *k)
   return 0;
 }
 
-int crypto_stream_salsa20(u8 *c,u64 d,const u8 *n,const u8 *k)
+int crypto_stream_salsa20(u8 *c,u32 d,const u8 *n,const u8 *k)
 {
   return crypto_stream_salsa20_xor(c,0,d,n,k);
 }
 
-int crypto_stream(u8 *c,u64 d,const u8 *n,const u8 *k)
+int crypto_stream(u8 *c,u32 d,const u8 *n,const u8 *k)
 {
   u8 s[32];
   crypto_core_hsalsa20(s,n,k,sigma);
   return crypto_stream_salsa20(c,d,n+16,s);
 }
 
-int crypto_stream_xor(u8 *c,const u8 *m,u64 d,const u8 *n,const u8 *k)
+int crypto_stream_xor(u8 *c,const u8 *m,u32 d,const u8 *n,const u8 *k)
 {
   u8 s[32];
   crypto_core_hsalsa20(s,n,k,sigma);
@@ -183,7 +183,7 @@ static const u32 minusp[17] = {
   5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 252
 } ;
 
-int crypto_onetimeauth(u8 *out,const u8 *m,u64 n,const u8 *k)
+int crypto_onetimeauth(u8 *out,const u8 *m,u32 n,const u8 *k)
 {
   u32 s,i,j,u,x[17],r[17],h[17],c[17],g[17];
 
@@ -236,14 +236,14 @@ int crypto_onetimeauth(u8 *out,const u8 *m,u64 n,const u8 *k)
   return 0;
 }
 
-int crypto_onetimeauth_verify(const u8 *h,const u8 *m,u64 n,const u8 *k)
+int crypto_onetimeauth_verify(const u8 *h,const u8 *m,u32 n,const u8 *k)
 {
   u8 x[16];
   crypto_onetimeauth(x,m,n,k);
   return crypto_verify_16(h,x);
 }
 
-int crypto_secretbox(u8 *c,const u8 *m,u64 d,const u8 *n,const u8 *k)
+int crypto_secretbox(u8 *c,const u8 *m,u32 d,const u8 *n,const u8 *k)
 {
   int i;
   if (d < 32) return -1;
@@ -253,7 +253,7 @@ int crypto_secretbox(u8 *c,const u8 *m,u64 d,const u8 *n,const u8 *k)
   return 0;
 }
 
-int crypto_secretbox_open(u8 *m,const u8 *c,u64 d,const u8 *n,const u8 *k)
+int crypto_secretbox_open(u8 *m,const u8 *c,u32 d,const u8 *n,const u8 *k)
 {
   int i;
   u8 x[32];
@@ -461,24 +461,24 @@ int crypto_box_beforenm(u8 *k,const u8 *y,const u8 *x)
   return crypto_core_hsalsa20(k,_0,s,sigma);
 }
 
-int crypto_box_afternm(u8 *c,const u8 *m,u64 d,const u8 *n,const u8 *k)
+int crypto_box_afternm(u8 *c,const u8 *m,u32 d,const u8 *n,const u8 *k)
 {
   return crypto_secretbox(c,m,d,n,k);
 }
 
-int crypto_box_open_afternm(u8 *m,const u8 *c,u64 d,const u8 *n,const u8 *k)
+int crypto_box_open_afternm(u8 *m,const u8 *c,u32 d,const u8 *n,const u8 *k)
 {
   return crypto_secretbox_open(m,c,d,n,k);
 }
 
-int crypto_box(u8 *c,const u8 *m,u64 d,const u8 *n,const u8 *y,const u8 *x)
+int crypto_box(u8 *c,const u8 *m,u32 d,const u8 *n,const u8 *y,const u8 *x)
 {
   u8 k[32];
   crypto_box_beforenm(k,y,x);
   return crypto_box_afternm(c,m,d,n,k);
 }
 
-int crypto_box_open(u8 *m,const u8 *c,u64 d,const u8 *n,const u8 *y,const u8 *x)
+int crypto_box_open(u8 *m,const u8 *c,u32 d,const u8 *n,const u8 *y,const u8 *x)
 {
   u8 k[32];
   crypto_box_beforenm(k,y,x);
@@ -517,7 +517,7 @@ static const u64 K[80] =
   0x4cc5d4becb3e42b6ULL, 0x597f299cfc657e2aULL, 0x5fcb6fab3ad6faecULL, 0x6c44198c4a475817ULL
 };
 
-int crypto_hashblocks(u8 *x,const u8 *m,u64 n)
+int crypto_hashblocks(u8 *x,const u8 *m,u32 n)
 {
   u64 z[8],b[8],a[8],w[16],t;
   int i,j;
@@ -560,7 +560,7 @@ static const u8 iv[64] = {
   0x5b,0xe0,0xcd,0x19,0x13,0x7e,0x21,0x79
 } ;
 
-int crypto_hash(u8 *out,const u8 *m,u64 n)
+int crypto_hash(u8 *out,const u8 *m,u32 n)
 {
   u8 h[64],x[256];
   u64 i,b = n;
@@ -709,7 +709,7 @@ sv reduce(u8 *r)
   modL(r,x);
 }
 
-int crypto_sign(u8 *sm,u64 *smlen,const u8 *m,u64 n,const u8 *sk)
+int crypto_sign(u8 *sm,u32 *smlen,const u8 *m,u32 n,const u8 *sk)
 {
   u8 d[64],h[64],r[64];
   u64 i;
@@ -778,7 +778,7 @@ static int unpackneg(gf r[4],const u8 p[32])
   return 0;
 }
 
-int crypto_sign_open(u8 *m,u64 *mlen,const u8 *sm,u64 n,const u8 *pk)
+int crypto_sign_open(u8 *m,u32 *mlen,const u8 *sm,u32 n,const u8 *pk)
 {
   u64 i;
   u8 t[32],h[64];
