@@ -162,17 +162,6 @@ extern int crypto_onetimeauth_poly1305_tweet_verify(const unsigned char *,const 
 #define crypto_scalarmult_SCALARBYTES crypto_scalarmult_curve25519_SCALARBYTES
 #define crypto_scalarmult_IMPLEMENTATION crypto_scalarmult_curve25519_IMPLEMENTATION
 #define crypto_scalarmult_VERSION crypto_scalarmult_curve25519_VERSION
-#define crypto_scalarmult_curve25519_tweet_BYTES 32
-#define crypto_scalarmult_curve25519_tweet_SCALARBYTES 32
-extern int crypto_scalarmult_curve25519_tweet(unsigned char *,const unsigned char *,const unsigned char *);
-extern int crypto_scalarmult_curve25519_tweet_base(unsigned char *,const unsigned char *);
-#define crypto_scalarmult_curve25519_tweet_VERSION "-"
-#define crypto_scalarmult_curve25519 crypto_scalarmult_curve25519_tweet
-#define crypto_scalarmult_curve25519_base crypto_scalarmult_curve25519_tweet_base
-#define crypto_scalarmult_curve25519_BYTES crypto_scalarmult_curve25519_tweet_BYTES
-#define crypto_scalarmult_curve25519_SCALARBYTES crypto_scalarmult_curve25519_tweet_SCALARBYTES
-#define crypto_scalarmult_curve25519_VERSION crypto_scalarmult_curve25519_tweet_VERSION
-#define crypto_scalarmult_curve25519_IMPLEMENTATION "crypto_scalarmult/curve25519/tweet"
 #define crypto_secretbox_PRIMITIVE "xsalsa20poly1305"
 #define crypto_secretbox crypto_secretbox_xsalsa20poly1305
 #define crypto_secretbox_open crypto_secretbox_xsalsa20poly1305_open
@@ -269,4 +258,21 @@ extern int crypto_verify_32_tweet(const unsigned char *,const unsigned char *);
 #define crypto_verify_32_BYTES crypto_verify_32_tweet_BYTES
 #define crypto_verify_32_VERSION crypto_verify_32_tweet_VERSION
 #define crypto_verify_32_IMPLEMENTATION "crypto_verify/32/tweet"
+#ifdef MODULE_MUNACL_CURVE25519_CORTEXM0
+#include "munacl/curve25519-cortexm0/api.h"
+#define crypto_scalarmult_curve25519_IMPLEMENTATION "crypto_scalarmult/curve25519/munacl/cortexm0"
+#define crypto_scalarmult_curve25519_VERSION "20150813"
+#else /* use default tweetnacl curve22519 implementation */
+#define crypto_scalarmult_curve25519_tweet_BYTES 32
+#define crypto_scalarmult_curve25519_tweet_SCALARBYTES 32
+extern int crypto_scalarmult_curve25519_tweet(unsigned char *,const unsigned char *,const unsigned char *);
+extern int crypto_scalarmult_curve25519_tweet_base(unsigned char *,const unsigned char *);
+#define crypto_scalarmult_curve25519_tweet_VERSION "-"
+#define crypto_scalarmult_curve25519 crypto_scalarmult_curve25519_tweet
+#define crypto_scalarmult_curve25519_base crypto_scalarmult_curve25519_tweet_base
+#define crypto_scalarmult_curve25519_BYTES crypto_scalarmult_curve25519_tweet_BYTES
+#define crypto_scalarmult_curve25519_SCALARBYTES crypto_scalarmult_curve25519_tweet_SCALARBYTES
+#define crypto_scalarmult_curve25519_VERSION crypto_scalarmult_curve25519_tweet_VERSION
+#define crypto_scalarmult_curve25519_IMPLEMENTATION "crypto_scalarmult/curve25519/tweet"
+#endif
 #endif

@@ -9,13 +9,16 @@ typedef long long i64;
 typedef i64 gf[16];
 extern void randombytes(u8 *,u64);
 
-static const u8
-  _0[16],
-  _9[32] = {9};
+static const u8 _0[16];
+
+#ifndef MODULE_MUNACL_CURVE25519_CORTEXM0
+static const u8 _9[32] = {9};
+static const gf _121665 = {0xDB41,1};
+#endif
+
 static const gf
   gf0,
   gf1 = {1},
-  _121665 = {0xDB41,1},
   D = {0x78a3, 0x1359, 0x4dca, 0x75eb, 0xd8ab, 0x4141, 0x0a4d, 0x0070, 0xe898, 0x7779, 0x4079, 0x8cc7, 0xfe73, 0x2b6f, 0x6cee, 0x5203},
   D2 = {0xf159, 0x26b2, 0x9b94, 0xebd6, 0xb156, 0x8283, 0x149a, 0x00e0, 0xd130, 0xeef3, 0x80f2, 0x198e, 0xfce7, 0x56df, 0xd9dc, 0x2406},
   X = {0xd51a, 0x8f25, 0x2d60, 0xc956, 0xa7b2, 0x9525, 0xc760, 0x692c, 0xdc5c, 0xfdd6, 0xe231, 0xc0a4, 0x53fe, 0xcd6e, 0x36d3, 0x2169},
@@ -392,6 +395,7 @@ sv pow2523(gf o,const gf i)
   FOR(a,16) o[a]=c[a];
 }
 
+#ifndef MODULE_MUNACL_CURVE25519_CORTEXM0
 int crypto_scalarmult(u8 *q,const u8 *n,const u8 *p)
 {
   u8 z[32];
@@ -447,6 +451,7 @@ int crypto_scalarmult_base(u8 *q,const u8 *n)
 { 
   return crypto_scalarmult(q,n,_9);
 }
+#endif
 
 int crypto_box_keypair(u8 *y,u8 *x)
 {
